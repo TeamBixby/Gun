@@ -20,7 +20,7 @@ use function yaml_parse;
 class GunPlugin extends PluginBase implements Listener{
 	use SingletonTrait;
 	/** @var Gun[] */
-	protected $guns = [];
+	protected array $guns = [];
 
 	public function onLoad() : void{
 		self::setInstance($this);
@@ -39,7 +39,6 @@ class GunPlugin extends PluginBase implements Listener{
 
 	public function onPlayerInteract(PlayerInteractEvent $event) : void{
 		$item = $event->getItem();
-
 	}
 
 	public function designGun(Gun $gun) : Item{
