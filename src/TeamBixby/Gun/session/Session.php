@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace TeamBixby\Gun;
+namespace TeamBixby\Gun\session;
 
 use pocketmine\Player;
+use TeamBixby\Gun\Gun;
 
 class Session{
 	/**
@@ -68,13 +69,14 @@ class Session{
 
 	public function sendInfo() : void{
 		$this->prepare();
-		$text = "§d< {$this->gun->getName()} §d>\n§f탄약: §d{$this->guns[$this->gun->getName()]}/{$this->gun->getAmmo()}\n§f";
+		//$text = "§d< {$this->gun->getName()} §d>\n§f탄약: §d{$this->guns[$this->gun->getName()]}/{$this->gun->getAmmo()}\n§f";
 
-		if($this->guns[$this->gun->getName()] === 0){
-			$text .= "장전 쿨타임: " . (($this->gun->getReloadCooldown() + $this->cools[$this->gun->getName()]) - time()) . "초";
-		}
+		//if($this->guns[$this->gun->getName()] === 0){
+		//	$text .= "장전 쿨타임: " . (($this->gun->getReloadCooldown() + $this->cools[$this->gun->getName()]) - time()) . "초";
+		//}
+		// TODO
 
-		$this->player->sendTip($text);
+		//$this->player->sendTip($text);
 	}
 
 	public function canReloadGun() : bool{
