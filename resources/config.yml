@@ -1,0 +1,14 @@
+message.gunInfo:
+  - "§b§l< %gun% >§r"
+  - "§fAmmo: §d%ammo%§r"
+message.cooldown: "Cooldown: %cooldown%"
+
+message.gunName: "§d< §f%gun% §d>§r"
+message.gunLore:
+  - "This is info for %gun%"
+  - "Damage: %damage%"
+  - "Ammo: %ammo%"
+  - "Scope: %scope%"
+  - "Reload cool: %cooldown%"
+  - "Distance: %distance%"
+  - "Pass wall: %passwall%"
