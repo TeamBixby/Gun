@@ -81,28 +81,43 @@ class Gun{
 
 		$packets = [];
 
-		$needAsync = $this->distance >= 15;
 
 		for($i = 0; $i < $this->distance; $i++){
-			$vec = $pos->multiply($i)->add($player);
+			$vec = $pos->multiply($i)->add($player)->add(0, 1.7);
 			$block = $player->getLevel()->getBlock($vec);
+			/*
 			if(!$this->canPassWall && !$block->canPassThrough()){
 				break;
-			}
+			}*/
 			$pk = new LevelEventPacket();
-			$pk->evid = LevelEventPacket::EVENT_ADD_PARTICLE_MASK | Particle::TYPE_SPARKLER;
-			$pk->data = (new Color(0, 255, 0))->toRGBA();
+			$pk->evid = LevelEventPacket::EVENT_ADD_PARTICLE_MASK | (Particle::TYPE_SPARKLER & 0xFFF);
+			$pk->data = (new Color(0, 255, 0))->toARGB();
 			$pk->position = $vec;
 			$packets[] = $pk;
 			/** @var Living $nearEntity */
 			$nearEntity = $player->getLevel()->getNearestEntity($vec, 2, Living::class);
-			if($nearEntity !== null){
+			if($nearEntity !== null && $nearEntity !== $player){
 				$nearEntity->attack(new EntityDamageByEntityEvent($player, $nearEntity, EntityDamageEvent::CAUSE_PROJECTILE, $this->damage));
 				break;
 			}
 		}
+
 		if(count($packets) > 0){
-			$player->getServer()->batchPackets($player->getViewers(), $packets, !$needAsync);
+			$needAsync = count($packets) >= 15;
+			$player->getServer()->batchPackets($player->getViewers() + [$player], $packets, !$needAsync);
 		}
+	}
+
+	public function jsonSerialize() : array{
+		return [
+			"name" => $this->name,
+			"item" => $this->item->jsonSerialize(),
+			"damage" => $this->damage,
+			"distance" => $this->distance,
+			"scope" => $this->scope,
+			"reloadCooldown" => $this->reloadCooldown,
+			"ammo" => $this->ammo,
+			"canPassWall" => $this->canPassWall
+		];
 	}
 }
