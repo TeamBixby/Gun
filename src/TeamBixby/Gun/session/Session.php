@@ -7,6 +7,12 @@ namespace TeamBixby\Gun\session;
 use pocketmine\Player;
 use TeamBixby\Gun\Gun;
 
+use TeamBixby\Gun\GunPlugin;
+
+use function array_map;
+use function implode;
+use function str_replace;
+
 class Session{
 	/**
 	 * @var int[]
@@ -69,14 +75,15 @@ class Session{
 
 	public function sendInfo() : void{
 		$this->prepare();
-		//$text = "§d< {$this->gun->getName()} §d>\n§f탄약: §d{$this->guns[$this->gun->getName()]}/{$this->gun->getAmmo()}\n§f";
+		$text = implode("\n", array_map(function(string $line) : string{
+			return str_replace(["%gun%", "%ammo%"], [$this->gun->getName(), $this->guns[$this->gun->getName()] ?? $this->gun->getAmmo()], $line);
+		}, GunPlugin::getInstance()->getConfig()->get("message.gunInfo")));
 
-		//if($this->guns[$this->gun->getName()] === 0){
-		//	$text .= "장전 쿨타임: " . (($this->gun->getReloadCooldown() + $this->cools[$this->gun->getName()]) - time()) . "초";
-		//}
-		// TODO
+		if($this->guns[$this->gun->getName()] <= 0){
+			$text .= str_replace(["%cooldown%"], [$this->gun->getReloadCooldown()], GunPlugin::getInstance()->getConfig()->get("message.cooldown"));
+		}
 
-		//$this->player->sendTip($text);
+		$this->player->sendTip($text);
 	}
 
 	public function canReloadGun() : bool{
