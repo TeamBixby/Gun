@@ -32,7 +32,7 @@ class Session{
 	protected ?Gun $gun = null;
 	/** @var bool */
 	protected bool $needBackMovement = false;
-	/** @var float|int */
+	/** @var float */
 	protected float $movement = -1;
 
 	public function __construct(Player $player){
