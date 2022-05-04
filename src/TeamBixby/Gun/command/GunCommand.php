@@ -18,7 +18,7 @@ use TeamBixby\Gun\Gun;
 class GunCommand extends Command{
 
 	public function __construct(){
-		parent::__construct("gun", GunPlugin::getInstance());
+		parent::__construct("gun", "gun form command", "/gun", "gunui");
 	}
 
 	public function execute(CommandSender $sender, string $commandLabel, array $args) : bool{
