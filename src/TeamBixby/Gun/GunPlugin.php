@@ -100,7 +100,7 @@ class GunPlugin extends PluginBase implements Listener{
 	}
 
 	public function isGun(Item $item) : bool{
-		if(($gunTag = $item->getTag("gun")) === null){
+		if(($gunTag = $item->getString("gun")) === null){
 			return false;
 		}
 		if($this->getGun($gunTag->getValue()) === null){
