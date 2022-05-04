@@ -8,6 +8,7 @@ use pocketmine\entity\Attribute;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\entity\Entity;
+use pocketmine\plugin\{Plugin, PluginBase};
 use pocketmine\entity\Living;
 use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\nbt\tag\{ByteTag, CompoundTag, DoubleTag, FloatTag, StringTag, ListTag, ShortTag, IntTag};

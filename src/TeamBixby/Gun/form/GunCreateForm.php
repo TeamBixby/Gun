@@ -6,6 +6,7 @@ namespace TeamBixby\Gun\form;
 
 use pocketmine\form\Form;
 use pocketmine\player\Player;
+use pocketmine\plugin\{Plugin, PluginBase};
 use pocketmine\Server;
 use pocketmine\item\{VanillaItems, ItemFactory, Item, ItemIds};
 use pocketmine\utils\Config;
@@ -63,7 +64,7 @@ class GunCreateForm implements Form{
 			return;
 		}
 		[$name, $cooldown, $damage, $distance, $passWall, $ammo, $scope] = $data;
-		if(!isset($name) || GunPlugin::getInstance()->getGun($name) !== null){
+		if(!isset($name) || $this->getPlugin()->getGun($name) !== null){
 			return;
 		}
 		if(!isset($cooldown) || !is_numeric($cooldown) || ($cooldown = (int) $cooldown) < 0){
@@ -86,8 +87,8 @@ class GunCreateForm implements Form{
 			return;
 		}
 		$gun = new Gun($name, $item, $damage, $ammo, $scope, $cooldown, $distance, $passWall);
-		GunPlugin::getInstance()->registerGun($gun);
-		$player->getInventory()->setItemInHand(GunPlugin::getInstance()->designGun($gun));
+		$this->getPlugin()->registerGun($gun);
+		$player->getInventory()->setItemInHand($this->getPlugin()->designGun($gun));
 		$player->sendMessage("Gun registered successfully.");
 	}
 }
