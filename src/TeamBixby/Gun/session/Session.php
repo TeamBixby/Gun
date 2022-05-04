@@ -94,7 +94,7 @@ class Session{
 				$this->gun->getName(),
 				$this->guns[$this->gun->getName()] ?? $this->gun->getAmmo()
 			], $line);
-		}, GunPlugin::getInstance()->getConfig()->get("message.gunInfo")));
+		}, $this->getPlugin()->getConfig()->get("message.gunInfo")));
 
 		if($this->guns[$this->gun->getName()] <= 0){
 			$text .= "\n" . str_replace(["%cooldown%"], [$this->cools[$this->gun->getName()] - time()], GunPlugin::getInstance()->getConfig()->get("message.cooldown"));
