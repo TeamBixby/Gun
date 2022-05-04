@@ -8,6 +8,8 @@ use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
+use pocketmine\math\Vector3;
+use pocketmine\utils\TextFormat;
 use pocketmine\world\{Position, WorldManager, Location, World};
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageByEntity;
