@@ -1,14 +1,16 @@
+# Gun Ammo Slot Message
 message.gunInfo:
   - "§b§l< %gun% >§r"
   - "§fAmmo: §d%ammo%§r"
+# Gun Cooldown Message
 message.cooldown: "Cooldown: %cooldown%"
-
+# Gun Item Name & Lore Message
 message.gunName: "§d< §f%gun% §d>§r"
 message.gunLore:
-  - "This is info for %gun%"
+  - "Info Of: %gun%"
   - "Damage: %damage%"
   - "Ammo: %ammo%"
   - "Scope: %scope%"
   - "Reload cool: %cooldown%"
   - "Distance: %distance%"
-  - "Pass wall: %passwall%"
+  - "Can Pass Walls: %passwall%"

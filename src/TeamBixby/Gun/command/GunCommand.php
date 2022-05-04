@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace TeamBixby\Gun\command;
 
+use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
 use pocketmine\command\PluginCommand;
-use pocketmine\Player;
+use pocketmine\player\Player;
+use pocketmine\Server;
 use TeamBixby\Gun\form\GunMainForm;
 use TeamBixby\Gun\GunPlugin;
+use TeamBixby\Gun\Gun;
 
 class GunCommand extends PluginCommand{
 

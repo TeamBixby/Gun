@@ -4,17 +4,23 @@ declare(strict_types=1);
 
 namespace TeamBixby\Gun;
 
-use pocketmine\event\Listener;
+use pocketmine\plugin\{Plugin, PluginBase};
+use pocketmine\event\{Listener, HandlerList};
+use pocketmine\player\Player;
+use pocketmine\Server;
+use pocketmine\scheduler\{ClosureTask, TaskScheduler, TaskHandler, Task};
+use pocketmine\nbt\tag\{ByteTag, CompoundTag, DoubleTag, FloatTag, StringTag, ListTag, ShortTag, IntTag};
+use pocketmine\item\{VanillaItems, ItemFactory, Item, ItemIds};
+use pocketmine\inventory\CreativeInventory;
+use pocketmine\command\ConsoleCommandSender;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerItemHeldEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerQuitEvent;
-use pocketmine\item\Item;
-use pocketmine\nbt\tag\StringTag;
-use pocketmine\Player;
-use pocketmine\plugin\PluginBase;
-use pocketmine\scheduler\ClosureTask;
+use pocketmine\utils\Config;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\utils\Utils;
+use TeamBixby\Gun\Gun;
 use TeamBixby\Gun\command\GunCommand;
 use TeamBixby\Gun\session\Session;
 
@@ -35,11 +41,15 @@ class GunPlugin extends PluginBase implements Listener{
 	/** @var Session[] */
 	protected array $sessions = [];
 
-	public function onLoad() : void{
+	public function onLoad(): void{
 		self::setInstance($this);
 	}
 
-	public function onEnable() : void{
+	public function onEnable(): void{
+		$this->saveDefaultConfig();
+		$this->saveResource("config.yml");
+		$this->msgconfig = new Config($this->getDataFolder() . 'config.yml', Config::YAML);
+		$this->gunconfig = new Config($this->getDataFolder() . 'guns.yml', Config::YAML);
 		if(file_exists($file = $this->getDataFolder() . "guns.yml")){
 			$data = yaml_parse(file_get_contents($file));
 			foreach($data as $name => $gunData){
@@ -47,11 +57,10 @@ class GunPlugin extends PluginBase implements Listener{
 				$this->guns[$gun->getName()] = $gun;
 			}
 		}
+		$itemFactory = ItemFactory::getInstance();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
-
 		$this->getServer()->getCommandMap()->register("gun", new GunCommand());
-
-		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $unused) : void{
+		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $unused): void{
 			foreach($this->sessions as $name => $session){
 				$session->check();
 				$session->syncScope();
@@ -59,7 +68,7 @@ class GunPlugin extends PluginBase implements Listener{
 		}), 10);
 	}
 
-	public function onDisable() : void{
+	public function onDisable(): void{
 		$res = [];
 		foreach($this->guns as $name => $gun){
 			$res[$gun->getName()] = $gun->jsonSerialize();
@@ -83,12 +92,12 @@ class GunPlugin extends PluginBase implements Listener{
 		if(!$this->isGun($item)){
 			return null;
 		}
-		$gunTag = $item->getNamedTagEntry("gun");
+		$gunTag = $item->getNamedTag("gun");
 		return $this->getGun($gunTag->getValue());
 	}
 
 	public function isGun(Item $item) : bool{
-		if(($gunTag = $item->getNamedTagEntry("gun")) === null){
+		if(($gunTag = $item->getNamedTag("gun")) === null){
 			return false;
 		}
 		if($this->getGun($gunTag->getValue()) === null){
@@ -120,10 +129,9 @@ class GunPlugin extends PluginBase implements Listener{
 		unset($this->sessions[$player->getName()]);
 	}
 
-	public function onPlayerInteract(PlayerInteractEvent $event) : void{
+	public function onPlayerInteract(PlayerInteractEvent $event): void{
 		$item = $event->getItem();
 		$player = $event->getPlayer();
-
 		$session = $this->getSessionNonNull($player);
 
 		if(!$this->isGun($item)){
@@ -136,7 +144,7 @@ class GunPlugin extends PluginBase implements Listener{
 		$session->useGun();
 	}
 
-	public function onPlayerItemHeld(PlayerItemHeldEvent $event) : void{
+	public function onPlayerItemHeld(PlayerItemHeldEvent $event): void{
 		$player = $event->getPlayer();
 		$item = $event->getItem();
 		$session = $this->getSessionNonNull($player);
@@ -145,12 +153,12 @@ class GunPlugin extends PluginBase implements Listener{
 		$session->setNowGun($gun);
 	}
 
-	public function onPlayerJoin(PlayerJoinEvent $event) : void{
+	public function onPlayerJoin(PlayerJoinEvent $event): void{
 		$player = $event->getPlayer();
 		$this->createSession($player);
 	}
 
-	public function onPlayerQuit(PlayerQuitEvent $event) : void{
+	public function onPlayerQuit(PlayerQuitEvent $event): void{
 		if($this->getSession($event->getPlayer()) !== null){
 			$this->removeSession($event->getPlayer());
 		}
@@ -158,7 +166,7 @@ class GunPlugin extends PluginBase implements Listener{
 
 	public function designGun(Gun $gun) : Item{
 		$item = $gun->getItem();
-		$lores = array_values($this->getConfig()->get("message.gunLore"));
+		$lores = array_values($this->msgconfig->get("message.gunLore"));
 		$item->setLore(array_map(function(string $line) use ($gun) : string{
 			return str_replace(["%gun%", "%damage%", "%ammo%", "%scope%", "%cooldown%", "%distance%", "%passwall%"], [
 				$gun->getName(),
@@ -170,10 +178,9 @@ class GunPlugin extends PluginBase implements Listener{
 				$gun->canPassWall() ? "true" : "false"
 			], $line);
 		}, $lores));
-		$name = str_replace("%gun%", $gun->getName(), $this->getConfig()->get("message.gunName"));
+		$name = str_replace("%gun%", $gun->getName(), $this->msgconfig->get("message.gunName"));
 		$item->setCustomName($name);
-
-		$item->setNamedTagEntry(new StringTag("gun", (string) $gun->getName()));
+		$item->setNamedTag(new StringTag("gun", (string) $gun->getName()));
 		return $item;
 	}
 }

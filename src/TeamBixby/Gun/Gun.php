@@ -4,14 +4,26 @@ declare(strict_types=1);
 
 namespace TeamBixby\Gun;
 
+use pocketmine\entity\EntityDataHelper;
+use pocketmine\entity\EntityFactory;
+use pocketmine\entity\Entity;
 use pocketmine\entity\Living;
+use pocketmine\world\{Position, WorldManager, Location, World};
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDamageEvent;
-use pocketmine\item\Item;
-use pocketmine\level\particle\Particle;
+use pocketmine\event\entity\EntityDamageByEntity;
+use pocketmine\network\mcpe\NetworkSession;
 use pocketmine\network\mcpe\protocol\LevelEventPacket;
-use pocketmine\Player;
+use pocketmine\item\{VanillaItems, ItemFactory, Item, ItemIds};
+use pocketmine\world\particle\Particle;
+use pocketmine\nbt\tag\{ByteTag, CompoundTag, DoubleTag, FloatTag, StringTag, ListTag, ShortTag, IntTag};
+use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\mcpe\protocol\types\ParticleIds;
+use pocketmine\player\Player;
+use pocketmine\Server;
 use pocketmine\utils\Color;
+use pocketmine\utils\Config;
+use pocketmine\utils\Utils;
+use TeamBixby\Gun\GunPlugin;
 
 use function count;
 
@@ -78,13 +90,10 @@ class Gun{
 
 	public function shoot(Player $player) : void{
 		$pos = $player->getDirectionVector();
-
 		$packets = [];
-
-
 		for($i = 0; $i < $this->distance; $i++){
 			$vec = $pos->multiply($i)->add($player)->add(0, 1.7);
-			$block = $player->getLevel()->getBlock($vec);
+			$block = $player->getWorld()->getBlock($vec);
 			/*
 			if(!$this->canPassWall && !$block->canPassThrough()){
 				break;
@@ -95,7 +104,7 @@ class Gun{
 			$pk->position = $vec;
 			$packets[] = $pk;
 			/** @var Living $nearEntity */
-			$nearEntity = $player->getLevel()->getNearestEntity($vec, 2, Living::class);
+			$nearEntity = $player->getWorld()->getNearestEntity($vec, 2, Living::class);
 			if($nearEntity !== null && $nearEntity !== $player){
 				$nearEntity->attack(new EntityDamageByEntityEvent($player, $nearEntity, EntityDamageEvent::CAUSE_PROJECTILE, $this->damage));
 				break;

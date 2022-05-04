@@ -5,8 +5,14 @@ declare(strict_types=1);
 namespace TeamBixby\Gun\form;
 
 use pocketmine\form\Form;
-use pocketmine\Player;
+use pocketmine\player\Player;
+use pocketmine\Server;
+use pocketmine\item\{VanillaItems, ItemFactory, Item, ItemIds};
+use pocketmine\utils\Config;
+use pocketmine\utils\Utils;
+use pocketmine\nbt\tag\{ByteTag, CompoundTag, DoubleTag, FloatTag, StringTag, ListTag, ShortTag, IntTag};
 use TeamBixby\Gun\GunPlugin;
+use TeamBixby\Gun\Gun;
 
 class GunMainForm implements Form{
 
