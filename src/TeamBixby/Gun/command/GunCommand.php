@@ -10,12 +10,12 @@ use pocketmine\command\PluginCommand;
 use pocketmine\command\utils\InvalidCommandSyntaxException;
 use pocketmine\player\Player;
 use pocketmine\Server;
-use pocketmine\plugin\Plugin;
+use pocketmine\plugin\{Plugin, PluginBase};
 use TeamBixby\Gun\form\GunMainForm;
 use TeamBixby\Gun\GunPlugin;
 use TeamBixby\Gun\Gun;
 
-class GunCommand extends PluginCommand{
+class GunCommand extends Command{
 
 	public function __construct(){
 		parent::__construct("gun", GunPlugin::getInstance());
