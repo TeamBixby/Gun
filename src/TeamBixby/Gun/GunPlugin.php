@@ -95,12 +95,12 @@ class GunPlugin extends PluginBase implements Listener{
 		if(!$this->isGun($item)){
 			return null;
 		}
-		$gunTag = $item->getNamedTag("gun");
+		$gunTag = $item->getTag("gun");
 		return $this->getGun($gunTag->getValue());
 	}
 
 	public function isGun(Item $item) : bool{
-		if(($gunTag = $item->getNamedTag("gun")) === null){
+		if(($gunTag = $item->getTag("gun")) === null){
 			return false;
 		}
 		if($this->getGun($gunTag->getValue()) === null){
@@ -183,7 +183,7 @@ class GunPlugin extends PluginBase implements Listener{
 		}, $lores));
 		$name = str_replace("%gun%", $gun->getName(), $this->msgconfig->get("message.gunName"));
 		$item->setCustomName($name);
-		$item->setNamedTag(new StringTag("gun", (string) $gun->getName()));
+		$item->setTag(new StringTag("gun", (string) $gun->getName()));
 		return $item;
 	}
 }
