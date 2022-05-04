@@ -64,7 +64,7 @@ class GunCreateForm implements Form{
 			return;
 		}
 		[$name, $cooldown, $damage, $distance, $passWall, $ammo, $scope] = $data;
-		if(!isset($name) || $this->getPlugin()->getGun($name) !== null){
+		if(!isset($name) || GunPlugin::getInstance()->getGun($name) !== null){
 			return;
 		}
 		if(!isset($cooldown) || !is_numeric($cooldown) || ($cooldown = (int) $cooldown) < 0){
@@ -87,8 +87,8 @@ class GunCreateForm implements Form{
 			return;
 		}
 		$gun = new Gun($name, $item, $damage, $ammo, $scope, $cooldown, $distance, $passWall);
-		$this->getPlugin()->registerGun($gun);
-		$player->getInventory()->setItemInHand($this->getPlugin()->designGun($gun));
+		GunPlugin::getInstance()->registerGun($gun);
+		$player->getInventory()->setItemInHand(GunPlugin::getInstance()->designGun($gun));
 		$player->sendMessage("Gun registered successfully.");
 	}
 }

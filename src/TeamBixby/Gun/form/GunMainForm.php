@@ -41,16 +41,16 @@ class GunMainForm implements Form{
 				$player->sendForm(new GunCreateForm());
 				break;
 			case 2:
-				$player->sendForm(new GunListForm($guns = $this->getPlugin()->getGuns(), function(Player $player, int $data) use ($guns) : void{
+				$player->sendForm(new GunListForm($guns = GunPlugin::getInstance()->getGuns(), function(Player $player, int $data) use ($guns) : void{
 					if(isset($guns[$data])){
-						$player->getInventory()->addItem($this->getPlugin()->designGun($guns[$data]));
+						$player->getInventory()->addItem(GunPlugin::getInstance()->designGun($guns[$data]));
 					}
 				}));
 				break;
 			case 3:
-				$player->sendForm(new GunListForm($guns = $this->getPlugin()->getGuns(), function(Player $player, int $data) use ($guns) : void{
+				$player->sendForm(new GunListForm($guns = GunPlugin::getInstance()->getGuns(), function(Player $player, int $data) use ($guns) : void{
 					if(isset($guns[$data])){
-						$this->getPlugin()->unregisterGun($guns[$data]);
+						GunPlugin::getInstance()->unregisterGun($guns[$data]);
 					}
 				}));
 				break;
