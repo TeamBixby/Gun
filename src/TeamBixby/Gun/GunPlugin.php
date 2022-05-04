@@ -23,7 +23,7 @@ use pocketmine\utils\Utils;
 use TeamBixby\Gun\Gun;
 use TeamBixby\Gun\command\GunCommand;
 use TeamBixby\Gun\session\Session;
-
+use Closure;
 use function array_map;
 use function array_values;
 use function file_exists;
@@ -60,7 +60,7 @@ class GunPlugin extends PluginBase implements Listener{
 		$itemFactory = ItemFactory::getInstance();
 		$this->getServer()->getPluginManager()->registerEvents($this, $this);
 		$this->getServer()->getCommandMap()->register("gun", new GunCommand());
-		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(int $unused): void{
+		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function(): void{
 			foreach($this->sessions as $name => $session){
 				$session->check();
 				$session->syncScope();
